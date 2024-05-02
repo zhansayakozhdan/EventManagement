@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/mainLayout.html}">
+
+<div layout:fragment="content">
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <img th:src="@{/img/user.png}" alt="avatar"
+                         class="rounded-circle img-fluid" style="width: 150px;">
+                    <h5 class="my-3" th:text="${currentUser.fullName}"></h5>
+                    <div class="d-flex justify-content-center mb-2">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#editAccountModal">
+                            EDIT PROFILE
+                        </button>
+                        <button type="button" data-mdb-button-init data-mdb-ripple-init
+                                class="btn btn-outline-primary ms-1">Change Password
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="editAccountModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <form action="/edit/user/" method="post">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">EDIT AN ACCOUNT</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" th:value="${currentUser.id}" name="id">
+                                <div class="mb-3">
+                                    <label for="nameInput" class="form-label">Full Name</label>
+                                    <input name="fullName" type="text" class="form-control" id="nameInput"
+                                           th:value="${currentUser.fullName}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="emailInput" class="form-label">Email address</label>
+                                    <input name="email" type="email" class="form-control" id="emailInput"
+                                           th:value="${currentUser.email}" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="phoneInput" class="form-label">Phone</label>
+                                    <input name="phone" type="text" class="form-control" id="phoneInput"
+                                           th:value="${currentUser.phone}">
+                                </div>
+                                <input type="hidden" name="roles" th:each="role : ${currentUser.getRoles()}" th:value="${role.id}">
+                                <input type="hidden" th:value="${currentUser.getPassword()}" name="password">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">UPDATE</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Full Name</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0" th:text="${currentUser.fullName}"></p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Email</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0" th:text="${currentUser.email}"></p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Phone</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0" th:text="${currentUser.phone}"></p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Role</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0" th:each="role : ${currentUser.getRoles()}"
+                               th:text="${role.name} + ' '"></p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">My Bookings: </p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0" th:text="${myBookings.size()}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-2" th:each="myBooking : ${myBookings}">
+        <div class="card-header" th:text="${myBooking.getEvent().eventDate + ', в ' + myBooking.getEvent().eventTime}">
+        </div>
+        <div class="card-body">
+            <h5 class="card-title" th:text="${'Название события: ' + myBooking.getEvent().name}"></h5>
+            <h6 class="card-text" th:text="${'Бронирование на имя: ' + myBooking.getUser().fullName}"></h6>
+            <div class="d-flex">
+                <p th:text="${'Кол-во забранированных мест: ' + myBooking.getNumberOfReservedSeats()}" class="me-5"></p>
+                <p th:text="${'СТАТУС: ' + myBooking.getStatus()}"></p>
+            </div>
+            <!-- Button cancel booking modal -->
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" th:data-bs-target="${'#cancelBookingModal'+ myBooking.id}">
+                Отменить Бронь
+            </button>
+            <!-- Modal for cancel booking -->
+            <form action="/cancel/booking/" method="post">
+                <div class="modal fade" th:id="${'cancelBookingModal'+ myBooking.id}" tabindex="-1" aria-labelledby="deleteTaskModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="cancelBookingModalLabel">ОТМЕНА БРОНИ</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Вы точно хотите отменить бронирование на <b th:text="${myBooking.event.name}"></b>?</p>
+                                <input type="hidden" th:value="${myBooking.id}" name="id">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-danger">Отменить Бронирование</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+
+</html>

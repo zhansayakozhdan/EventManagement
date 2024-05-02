@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/mainLayout.html}">
+
+<div layout:fragment="content">
+
+<!--    &lt;!&ndash; Button trigger modal &ndash;&gt;-->
+<!--    <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#createEventModal">-->
+<!--        + NEW EVENT-->
+<!--    </button>-->
+
+<!--    &lt;!&ndash; Modal &ndash;&gt;-->
+<!--    <div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
+<!--        <div class="modal-dialog modal-lg">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <h1 class="modal-title fs-5" id="exampleModalLabel">Create New Event</h1>-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--                </div>-->
+<!--                <form action="/create/event/" method="post" class="modal-body">-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="inputEventName" class="form-label">Name</label>-->
+<!--                        <input name="name" type="text" class="form-control" id="inputEventName">-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="inputDescription" class="form-label">Description</label>-->
+<!--                        <textarea name="description" class="form-control" type="text" id="inputDescription"></textarea>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="dateInput" class="form-label">Date</label>-->
+<!--                        <input name="eventDate" type="date" class="form-control" id="dateInput">-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="timeInput" class="form-label">Start</label>-->
+<!--                        <input name="eventTime" type="time" class="form-control" id="timeInput">-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="venueInput" class="form-label">Venue</label>-->
+<!--                        <input name="venue" type="text" class="form-control" id="venueInput">-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="addressInput" class="form-label">Address</label>-->
+<!--                        <input name="address" type="text" class="form-control" id="addressInput">-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="guestsNumberInput" class="form-label">Number of Guests</label>-->
+<!--                        <input name="numderOfGuests" type="number" class="form-control" id="guestsNumberInput">-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="ticketInput" class="form-label">Ticket Price</label>-->
+<!--                        <input name="ticketCost" type="number" class="form-control" id="ticketInput">-->
+<!--                    </div>-->
+<!--                    <div class="modal-footer">-->
+<!--                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
+<!--                        <button type="submit" class="btn btn-success">ADD EVENT</button>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <div class="row">
+        <div class="col-sm-6" th:each="event : ${vseEventy}">
+            <div class="card border-primary mb-3">
+                <div class="card-header" th:text="${event.getEventDate() + ', в ' + event.getEventTime()}"></div>
+                <div class="card-body text-primary">
+                    <h5 class="card-title" th:text="${event.getName()}"></h5>
+                    <p class="card-text" th:text="${event.getDescription()}"></p>
+                    <p th:text="${'Цена билета: от ' + event.getTicketCost() + ' тг'}"></p>
+                    <a th:href="'/event/details/'+${event.id}" class="btn btn-primary">Купить билет</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</html>
